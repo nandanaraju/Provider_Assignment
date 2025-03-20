@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     npiNumber: DataTypes.STRING,
-    state: DataTypes.STRING
+    state: DataTypes.STRING,
+    verified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   }, {
     sequelize,
     modelName: 'Provider',
