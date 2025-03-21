@@ -1,5 +1,5 @@
 const { Provider } = require('../../models');
-const { fetchProviderData,fetchProvidersByOrganizationAndState } = require('../services/nppesService');
+const { fetchProviderData,fetchProvidersByOrganizationAndState,fetchProvidersByTaxonomyAndState } = require('../services/nppesService');
 
 exports.addProvider = async (req, res) => {
     try {
@@ -77,10 +77,6 @@ exports.getVerifiedProvidersByState = async (req, res) => {
   }
 };
 
-
-/**
- * Controller to get providers by organization and state
- */
 exports.getProvidersByOrganizationAndState = async (req, res) => {
   const { organizationName, state } = req.query;
 
@@ -101,3 +97,27 @@ exports.getProvidersByOrganizationAndState = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch providers' });
   }
 };
+
+exports.getProvidersByTaxonomyAndState = async (req, res) => {
+  const { taxonomy } = req.params; 
+const { state } = req.query;     
+
+
+if (!taxonomy || !state) {
+  return res.status(400).json({ error: 'Both taxonomy and state are required' });
+}
+
+  try {
+    const providers = await fetchProvidersByTaxonomyAndState(taxonomy, state);
+
+    if (!providers) {
+      return res.status(404).json({ error: 'No providers found' });
+    }
+
+    res.status(200).json({ providers });
+  } catch (error) {
+    console.error('Error fetching providers:', error);
+    res.status(500).json({ error: 'Failed to fetch providers' });
+  }
+};
+

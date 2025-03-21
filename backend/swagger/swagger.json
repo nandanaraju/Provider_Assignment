@@ -98,6 +98,44 @@
           "500": { "description": "Server error" }
         }
       }
+    },
+    "/api/providers/taxonomy/{taxonomy}": {
+      "get": {
+        "summary": "Get providers by taxonomy and state",
+        "description": "Fetch providers by taxonomy and state.",
+        "parameters": [
+          {
+            "name": "taxonomy",
+            "in": "path",
+            "required": true,
+            "description": "Taxonomy description (e.g., Counselor)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "description": "State abbreviation",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of providers by taxonomy and state"
+          },
+          "404": {
+            "description": "No providers found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   }
 }
+  

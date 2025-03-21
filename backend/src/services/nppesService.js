@@ -49,3 +49,26 @@ exports.fetchProvidersByOrganizationAndState = async (organizationName, state) =
     return null;
   }
 };
+
+exports.fetchProvidersByTaxonomyAndState = async (taxonomy, state) => {
+  try {
+    const apiUrl = `https://npiregistry.cms.hhs.gov/api/?taxonomy_description=${encodeURIComponent(taxonomy)}&state=${state}&version=2.1`;
+    const response = await axios.get(apiUrl);
+
+    if (!response.data.results || response.data.results.length === 0) {
+      return { message: `No providers found for taxonomy: ${taxonomy} in state: ${state}` };
+    }
+
+    const providers = response.data.results.map((provider) => ({
+      npiNumber: provider.number,
+      name: provider.basic?.organization_name || provider.basic?.name || 'Unknown',
+      state: provider.addresses?.[0]?.state || 'Unknown',
+      address: provider.addresses?.[0] || {},
+    }));
+
+    return { providers };
+  } catch (error) {
+    console.error('Error fetching providers:', error.message);
+    return { error: 'Failed to fetch providers' };
+  }
+};
